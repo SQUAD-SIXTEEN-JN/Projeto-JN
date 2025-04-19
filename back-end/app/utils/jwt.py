@@ -1,7 +1,10 @@
 import jwt
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-SECRET_KEY = "seu_segredo_muito_forte_aqui"  # coloque no .env depois
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 EXPIRATION_MINUTES = 60
 
