@@ -4,4 +4,4 @@ class UsuarioCreate(BaseModel):
     nome: str
     matricula: int
     senha: str
-    fk_perfil: int
+    perfil: str

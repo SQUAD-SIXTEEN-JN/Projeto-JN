@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Projeto universitário em colaboração com a JotaNunes, tendo como objetivo a construção de uma plataforma de cursos"
 authors = ["Raphael Santana <r.laurindo.santanapro@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -11,7 +12,6 @@ fastapi = {extras = ["standard"], version = "^0.115.8"}
 sqlalchemy = "^2.0.40"
 bcrypt = "^4.3.0"
 psycopg2 = "^2.9.9"
-requests = "^2.31.0"
 python-dotenv = "^1.0.1"
 pydantic = "^2.6.4"
 passlib = "^1.7.4"

@@ -1,27 +1,45 @@
-import jwt
-from datetime import datetime, timedelta
 import os
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+
+from fastapi import HTTPException, status
+from jose import jwt, ExpiredSignatureError, JWTError
+
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
 EXPIRATION_MINUTES = 60
 
 def criar_jwt(matricula: int):
+    """
+    Faz a criação do jwt retornando o token
+    """
     exp = datetime.utcnow() + timedelta(minutes=EXPIRATION_MINUTES)
     payload = {
         "sub": str(matricula),
         "exp": exp
     }
-    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
     return token
 
+
 def verificar_jwt(token: str):
+    """
+    Valida e decodifica o jwt, retornando a matrícula do usuário em caso de sucesso
+    """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         return payload["sub"]
-    except jwt.ExpiredSignatureError:
-        raise ValueError("Token expirado")
-    except jwt.InvalidTokenError:
-        raise ValueError("Token inválido")
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expirado",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

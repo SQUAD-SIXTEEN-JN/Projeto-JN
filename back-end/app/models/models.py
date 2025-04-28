@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from app.models import Base, perfil  # Certifique-se de que o Base está sendo importado corretamente
+from app.database import Base
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -8,3 +8,8 @@ class Usuario(Base):
     senha_hash = Column(String(255), nullable=False)
     primeiro_acesso = Column(Boolean, default=True)
     fk_perfil = Column(Integer, ForeignKey("perfis.id"), nullable=False)
+
+class Perfil(Base):
+    __tablename__ = "perfis"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(50), nullable=False)
