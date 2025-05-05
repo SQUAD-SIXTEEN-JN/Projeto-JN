@@ -3,7 +3,7 @@ name = "squad-sixteen"
 version = "0.1.0"
 description = "Projeto universitário em colaboração com a JotaNunes, tendo como objetivo a construção de uma plataforma de cursos"
 authors = ["Raphael Santana <r.laurindo.santanapro@gmail.com>"]
-readme = "README.md"
+readme = "../README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -17,6 +17,7 @@ pydantic = "^2.6.4"
 passlib = "^1.7.4"
 python-jose = "^3.3.0"  # para `jose`
 pyjwt = "^2.8.0"
+pandas = "^2.2.3"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.34.0"
