@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # Carrega as variáveis do arquivo .env
+
 from app.main import app
 import uvicorn
 
