@@ -15,12 +15,12 @@ psycopg2 = "^2.9.9"
 python-dotenv = "^1.0.1"
 pydantic = "^2.6.4"
 passlib = "^1.7.4"
-python-jose = "^3.3.0"  # para `jose`
+python-jose = "^3.3.0"
 pyjwt = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.34.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.7.0"]
 build-backend = "poetry.core.masonry.api"
