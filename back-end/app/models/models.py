@@ -13,6 +13,7 @@ class Perfil(Base):
     __tablename__ = "perfis"
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(50), nullable=False)
+    descricao = Column(Text)
 
 class Menu(Base):
     __tablename__ = "menus"
