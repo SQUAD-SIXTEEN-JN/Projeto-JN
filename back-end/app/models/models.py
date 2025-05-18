@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
 from app.database import Base
 
 class Usuario(Base):
@@ -13,3 +13,10 @@ class Perfil(Base):
     __tablename__ = "perfis"
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(50), nullable=False)
+
+class Menu(Base):
+    __tablename__ = "menus"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(30 ), nullable=False)
+    descricao = Column(Text, nullable=False)
+    rota = Column(Text, nullable=False)

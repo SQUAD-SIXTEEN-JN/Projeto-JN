@@ -8,7 +8,7 @@ from app.utils.jwt import criar_jwt
 from app.database import get_db
 from app.models.models import Usuario, Perfil
 
-router = APIRouter(prefix="/auth", tags=["Autenticação"])
+router = APIRouter()
 
 @router.post("/register", summary="Registrar Usuário")
 def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
