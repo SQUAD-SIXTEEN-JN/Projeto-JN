@@ -43,6 +43,13 @@ async def delete_curso(db: Session, curso_id: int) -> Dict[str, bool]:
     """Exclui um curso pelo ID"""
     db_curso = await get_curso(db, curso_id)
     
+    # Verificar se o curso tem módulos
+    if db_curso.modulos and len(db_curso.modulos) > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Não é possível excluir o curso com ID {curso_id} pois possui módulos associados"
+        )
+    
     db.delete(db_curso)
     db.commit()
     return {"success": True}

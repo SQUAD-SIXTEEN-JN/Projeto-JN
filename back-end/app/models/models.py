@@ -41,3 +41,15 @@ class Cursos(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(100), nullable=False)
     descricao = Column(Text)
+
+    modulos = relationship("Modulos", back_populates="curso")
+
+class Modulos(Base):
+    __tablename__ = "modulos"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(40), nullable=False)
+    ordem = Column(Integer, nullable=False)
+    descricao = Column(Text)
+    fk_curso = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+
+    curso = relationship("Cursos", back_populates="modulos")
