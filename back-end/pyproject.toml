@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Projeto universitário em colaboração com a JotaNunes, tendo como objetivo a construção de uma plataforma de cursos"
 authors = ["Raphael Santana <r.laurindo.santanapro@gmail.com>"]
 readme = "README.md"
-package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -15,12 +14,13 @@ psycopg2 = "^2.9.9"
 python-dotenv = "^1.0.1"
 pydantic = "^2.6.4"
 passlib = "^1.7.4"
-python-jose = "^3.3.0"  # para `jose`
+python-jose = "^3.3.0"
 pyjwt = "^2.8.0"
+dotenv = "^0.9.9"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.34.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.7.0"]
 build-backend = "poetry.core.masonry.api"
