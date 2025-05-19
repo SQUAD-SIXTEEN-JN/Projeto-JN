@@ -35,3 +35,9 @@ class Permissoes(Base):
 
     perfil = relationship("Perfil", back_populates="permissoes")
     menu = relationship("Menu", back_populates="permissoes")
+
+class Cursos(Base):
+    __tablename__ = "cursos"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(100), nullable=False)
+    descricao = Column(Text)
