@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, REAL
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -9,6 +9,8 @@ class Usuario(Base):
     senha_hash = Column(String(255), nullable=False)
     primeiro_acesso = Column(Boolean, default=True)
     fk_perfil = Column(Integer, ForeignKey("perfis.id"), nullable=False)
+
+    progresso = relationship("Progressos", back_populates="usuario")
 
 class Perfil(Base):
     __tablename__ = "perfis"
@@ -43,6 +45,7 @@ class Cursos(Base):
     descricao = Column(Text)
 
     modulos = relationship("Modulos", back_populates="curso")
+    progresso = relationship("Progressos", back_populates="curso")
 
 class Modulos(Base):
     __tablename__ = "modulos"
@@ -53,3 +56,13 @@ class Modulos(Base):
     fk_curso = Column(Integer, ForeignKey("cursos.id"), nullable=False)
 
     curso = relationship("Cursos", back_populates="modulos")
+
+class Progressos(Base):
+    __tablename__ = "progressos"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    progresso = Column(REAL, nullable=False)
+    fk_usuario = Column(Integer, ForeignKey("usuarios.matricula"), nullable=False)
+    fk_curso = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+
+    usuario = relationship("Usuario", back_populates="progresso")
+    curso = relationship("Cursos", back_populates="progresso")
