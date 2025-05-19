@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from fastapi import HTTPException
@@ -104,6 +104,42 @@ async def get_progressos_by_usuario(db: Session, usuario_id: int) -> List[Progre
         )
     
     return db.query(Progressos).filter(Progressos.fk_usuario == usuario_id).all()
+
+
+async def get_progressos_by_usuario_with_cursos(db: Session, usuario_id: int) -> List[Dict[str, Any]]:
+    """
+    Busca todos os progressos de um usuário específico, incluindo informações dos cursos.
+    """
+    # Verificar se o usuário existe
+    usuario = db.query(Usuario).filter(Usuario.matricula == usuario_id).first()
+    if not usuario:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Usuário com ID {usuario_id} não encontrado"
+        )
+    
+    # Buscar progressos com join das informações do curso
+    progressos = db.query(Progressos).join(
+        Cursos, Progressos.fk_curso == Cursos.id
+    ).filter(
+        Progressos.fk_usuario == usuario_id
+    ).add_entity(Cursos).all()
+    
+    # Formatar a resposta com informações do curso
+    resultado = []
+    for progresso, curso in progressos:
+        resultado.append({
+            "id": progresso.id,
+            "progresso": progresso.progresso,
+            "fk_usuario": progresso.fk_usuario,
+            "curso": {
+                "id": curso.id,
+                "nome": curso.nome,
+                "descricao": curso.descricao
+            }
+        })
+    
+    return resultado
 
 
 async def get_progressos_by_curso(db: Session, curso_id: int) -> List[Progressos]:

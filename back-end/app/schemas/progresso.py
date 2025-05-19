@@ -32,3 +32,24 @@ class ProgressoResponse(ProgressoBase):
     model_config = {
         "from_attributes": True
     }
+
+
+class CursoSimpleInfo(BaseModel):
+    id: int
+    nome: str
+    descricao: str
+    
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class ProgressoWithCursoResponse(BaseModel):
+    id: int
+    progresso: float = Field(..., ge=0, le=100, description="Porcentagem de progresso do curso (0-100)")
+    fk_usuario: int
+    curso: CursoSimpleInfo
+    
+    model_config = {
+        "from_attributes": True
+    }

@@ -3,12 +3,13 @@ from fastapi import APIRouter, Depends, Query, Path, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas.progresso import ProgressoCreate, ProgressoResponse, ProgressoUpdate
+from app.schemas.progresso import ProgressoCreate, ProgressoResponse, ProgressoUpdate, ProgressoWithCursoResponse
 from app.services.progresso_service import (
     create_progresso,
     get_progressos,
     get_progressos_by_usuario,
     get_progresso_by_usuario_curso,
+    get_progressos_by_usuario_with_cursos,
     update_progresso_by_usuario_curso,
     delete_progresso_by_usuario_curso
 )
@@ -48,6 +49,17 @@ async def read_progressos_by_usuario(
     Busca todos os progressos de um usuário específico.
     """
     return await get_progressos_by_usuario(db=db, usuario_id=usuario_id)
+
+
+@router.get("/usuario/{usuario_id}/detalhado", response_model=List[ProgressoWithCursoResponse])
+async def read_progressos_by_usuario_with_cursos(
+    usuario_id: int = Path(..., title="ID do usuário", ge=1),
+    db: Session = Depends(get_db)
+):
+    """
+    Busca todos os progressos de um usuário específico, incluindo informações dos cursos.
+    """
+    return await get_progressos_by_usuario_with_cursos(db=db, usuario_id=usuario_id)
 
 
 @router.get("/usuario/{usuario_id}/curso/{curso_id}", response_model=Optional[ProgressoResponse])
