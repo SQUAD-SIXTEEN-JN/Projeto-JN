@@ -84,7 +84,10 @@ def login_user(login: Login, db: Session = Depends(get_db)):
     
     token = criar_jwt(user.matricula)
 
+    username = user.nome
+
     return {
+        "username": username,
         "first_acess": is_first_acess,
         "access_token": token,
         "token_type": "bearer"
