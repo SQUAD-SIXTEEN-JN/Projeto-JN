@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.auth import router as auth_router
 from app.routers.menu import router as menu_router
@@ -15,6 +16,29 @@ app = FastAPI(
     title="SQUAD SIXTEEN - JN",
     version="v1"
     )
+
+# ====================================================================
+# ============== INÍCIO DA CONFIGURAÇÃO DE CORS ======================
+# ====================================================================
+
+# Lista de origens permitidas (domínios do front-end)
+origins = [
+    "http://localhost",      # Comum para desenvolvimento local
+    "http://localhost:3000", # Comum para apps React
+    "http://localhost:8080", # Outra porta de desenvolvimento comum
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True, # Necessário para enviar cookies/tokens de autenticação
+    allow_methods=["*"],    # Permite todos os métodos: GET, POST, PUT, DELETE, etc.
+    allow_headers=["*"],    # Permite todos os cabeçalhos
+)
+
+# ====================================================================
+# ================== FIM DA CONFIGURAÇÃO DE CORS =====================
+# ====================================================================
 
 app.include_router(auth_router, prefix=f"/{app.version}/auth", tags=["Autenticação"])
 app.include_router(menu_router, prefix=f"/{app.version}/menu", tags=["Menu"]) 
