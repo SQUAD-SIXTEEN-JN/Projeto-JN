@@ -83,12 +83,12 @@ def login_user(login: Login, db: Session = Depends(get_db)):
         is_first_acess = False
     
     token = criar_jwt(user.matricula)
-
     username = user.nome
+    perfil_id = user.fk_perfil
 
     return {
         "username": username,
-        "perfil_id": user.fk_perfil,
+        "perfil_id": perfil_id,
         "first_acess": is_first_acess,
         "access_token": token,
         "token_type": "bearer"
