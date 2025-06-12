@@ -88,6 +88,7 @@ def login_user(login: Login, db: Session = Depends(get_db)):
 
     return {
         "username": username,
+        "perfil_id": user.fk_perfil,
         "first_acess": is_first_acess,
         "access_token": token,
         "token_type": "bearer"
