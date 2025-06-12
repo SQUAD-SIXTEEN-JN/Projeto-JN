@@ -8,6 +8,7 @@ from app.routers.permissoes import router as permissoes_router
 from app.routers.curso import router as curso_router
 from app.routers.modulo import router as modulo_router
 from app.routers.progresso import router  as progresso_router
+from app.routers import conteudo
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -47,3 +48,4 @@ app.include_router(permissoes_router, prefix=f"/{app.version}/permissoes", tags=
 app.include_router(curso_router, prefix=f"/{app.version}/curso", tags=["Cursos"])
 app.include_router(progresso_router, prefix=f"/{app.version}/progresso", tags=["Progresso dos Cursos"])
 app.include_router(modulo_router, prefix=f"/{app.version}/modulo", tags=["Módulos dos Cursos"])
+app.include_router(conteudo.router)

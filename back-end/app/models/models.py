@@ -11,6 +11,7 @@ class Usuario(Base):
     fk_perfil = Column(Integer, ForeignKey("perfis.id"), nullable=False)
 
     progresso = relationship("Progressos", back_populates="usuario")
+    
 
 class Perfil(Base):
     __tablename__ = "perfis"
@@ -56,6 +57,7 @@ class Modulos(Base):
     fk_curso = Column(Integer, ForeignKey("cursos.id"), nullable=False)
 
     curso = relationship("Cursos", back_populates="modulos")
+    conteudos = relationship("Conteudo", back_populates="modulo")
 
 class Progressos(Base):
     __tablename__ = "progressos"
@@ -66,3 +68,16 @@ class Progressos(Base):
 
     usuario = relationship("Usuario", back_populates="progresso")
     curso = relationship("Cursos", back_populates="progresso")
+    
+class Conteudo(Base):
+    __tablename__ = "conteudos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False)
+    ordem = Column(Integer, nullable=False)
+    tipo = Column(String,nullable=False)
+    url = Column(String, nullable=False)
+    fk_modulo = Column(Integer, ForeignKey("modulos.id"), nullable=False)
+    
+    modulo = relationship("Modulos", back_populates="conteudos")
+    
