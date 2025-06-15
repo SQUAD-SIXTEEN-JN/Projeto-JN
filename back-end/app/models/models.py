@@ -10,6 +10,7 @@ class Usuario(Base):
     primeiro_acesso = Column(Boolean, default=True)
     fk_perfil = Column(Integer, ForeignKey("perfis.id"), nullable=False)
 
+    perfil = relationship("Perfil", back_populates="usuarios")
     progresso = relationship("Progressos", back_populates="usuario")
     
 
@@ -19,6 +20,7 @@ class Perfil(Base):
     nome = Column(String(50), nullable=False)
     descricao = Column(Text)
 
+    usuarios = relationship("Usuario", back_populates="perfil")
     permissoes = relationship("Permissoes", back_populates="perfil")
 
 class Menu(Base):
