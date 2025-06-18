@@ -28,6 +28,7 @@ origins = [
     "http://localhost",      # Comum para desenvolvimento local
     "http://localhost:3000", # Comum para apps React
     "http://localhost:8080", # Outra porta de desenvolvimento comum
+    "https://jotanuness.vercel.app" # Nosso front-end
 ]
 
 app.add_middleware(
