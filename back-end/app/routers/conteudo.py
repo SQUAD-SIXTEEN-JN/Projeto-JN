@@ -4,7 +4,7 @@ from app.database import get_db
 from app.schemas.conteudo import ConteudoCreate, ConteudoResponse, ConteudoUpdate
 from app.services import conteudo_service
 
-router = APIRouter(prefix="/videos", tags=["Videos"])
+router = APIRouter()
 
 @router.post("/", response_model=ConteudoResponse)
 def criar(video: ConteudoCreate, db: Session = Depends(get_db)):

@@ -1,19 +1,29 @@
+import base64
+
 from typing import List, Dict, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 
 from app.models.models import Cursos, Progressos
 from app.schemas.curso import CursoCreate, CursoUpdate
 
 
-async def create_curso(db: Session, curso: CursoCreate) -> Cursos:
+async def create_curso(db: Session, curso: CursoCreate, capa: UploadFile) -> Cursos:
     """
     Cria um novo curso.
     """
+
+    if capa.content_type not in ["image/jpeg", "image/png"]:
+        raise HTTPException(400, detail="O formato da capa anexada não correposponde aos permitidos")
+    
+    capa_bytes = await capa.read()
+
     db_curso = Cursos(
         nome=curso.nome,
-        descricao=curso.descricao
+        descricao=curso.descricao,
+        capa=base64.b64encode(capa_bytes).decode(),
+        capa_mime=capa.content_type
     )
     
     db.add(db_curso)
@@ -23,68 +33,46 @@ async def create_curso(db: Session, curso: CursoCreate) -> Cursos:
     return db_curso
 
 
-async def get_curso(db: Session, curso_id: int, usuario_id: Optional[int] = None) -> Cursos:
+async def get_curso(db: Session, curso_id: int) -> Cursos:
     """
-    Busca um curso pelo ID.
-    Opcionalmente, pode receber o ID do usuário para buscar o progresso.
+    Busca um curso pelo ID
     """
     curso = db.query(Cursos).filter(Cursos.id == curso_id).first()
     
     if not curso:
         raise HTTPException(status_code=404, detail="Curso não encontrado")
     
-    # Adiciona o progresso do usuário se o ID do usuário foi fornecido
-    if usuario_id:
-        progresso = db.query(Progressos).filter(
-            Progressos.fk_curso == curso_id,
-            Progressos.fk_usuario == usuario_id
-        ).first()
-        
-        if progresso:
-            curso.progresso = progresso.progresso
-        else:
-            curso.progresso = 0.0
-    
     return curso
 
 
-async def get_cursos(db: Session, skip: int = 0, limit: int = 100, usuario_id: Optional[int] = None) -> List[Cursos]:
+async def get_cursos(db: Session, skip: int = 0, limit: int = 100) -> List[Cursos]:
     """
-    Busca todos os cursos com paginação.
-    Opcionalmente, pode receber o ID do usuário para buscar o progresso de cada curso.
+    Busca todos os cursos com paginação
     """
-    cursos = db.query(Cursos).offset(skip).limit(limit).all()
-    
-    # Adiciona o progresso do usuário a cada curso se o ID do usuário foi fornecido
-    if usuario_id:
-        for curso in cursos:
-            progresso = db.query(Progressos).filter(
-                Progressos.fk_curso == curso.id,
-                Progressos.fk_usuario == usuario_id
-            ).first()
-            
-            if progresso:
-                curso.progresso = progresso.progresso
-            else:
-                curso.progresso = 0.0
-    
-    return cursos
+    return db.query(Cursos).offset(skip).limit(limit).all()
 
 
-async def update_curso(db: Session, curso_id: int, curso_data: CursoUpdate) -> Cursos:
+async def update_curso(db: Session, curso_id: int, curso_data: CursoUpdate, capa: UploadFile = None) -> Cursos:
     """
-    Atualiza um curso existente.
+    Atualiza um curso existente, incluindo nova capa se fornecida.
     """
     curso = await get_curso(db, curso_id)
     
-    # Atualiza apenas os campos fornecidos
     update_data = curso_data.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(curso, key, value)
-    
+
+    if capa:
+        if capa.content_type not in ["image/png", "image/jpeg"]:
+            raise HTTPException(status_code=400, detail="Formato de imagem não suportado (use PNG ou JPEG)")
+
+        conteudo_bytes = await capa.read()
+        curso.capa = base64.b64encode(conteudo_bytes).decode()
+        curso.capa_mime = capa.content_type
+
     db.commit()
     db.refresh(curso)
-    
+
     return curso
 
 
@@ -103,30 +91,14 @@ async def delete_curso(db: Session, curso_id: int) -> Dict[str, bool]:
     return {"success": True}
 
 
-async def search_cursos_by_name(db: Session, name: str, usuario_id: Optional[int] = None) -> List[Cursos]:
+async def search_cursos_by_name(db: Session, name: str) -> List[Cursos]:
     """
     Busca cursos pelo nome.
-    Opcionalmente, pode receber o ID do usuário para buscar o progresso de cada curso.
     """
     # Busca cursos com nome que contém a string fornecida
-    cursos = db.query(Cursos).filter(
+    return db.query(Cursos).filter(
         or_(
             Cursos.nome.ilike(f"%{name}%"),
             Cursos.descricao.ilike(f"%{name}%")
         )
     ).all()
-    
-    # Adiciona o progresso do usuário a cada curso se o ID do usuário foi fornecido
-    if usuario_id:
-        for curso in cursos:
-            progresso = db.query(Progressos).filter(
-                Progressos.fk_curso == curso.id,
-                Progressos.fk_usuario == usuario_id
-            ).first()
-            
-            if progresso:
-                curso.progresso = progresso.progresso
-            else:
-                curso.progresso = 0.0
-    
-    return cursos

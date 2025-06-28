@@ -46,6 +46,8 @@ class Cursos(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(100), nullable=False)
     descricao = Column(Text)
+    capa = Column(Text)
+    capa_mime = Column(Text)
 
     modulos = relationship("Modulos", back_populates="curso")
     progresso = relationship("Progressos", back_populates="curso")

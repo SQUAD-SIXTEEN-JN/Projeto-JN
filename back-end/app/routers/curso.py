@@ -1,5 +1,5 @@
-from typing import List, Dict
-from fastapi import APIRouter, Depends, Query, Path
+from typing import List, Dict, Optional
+from fastapi import APIRouter, Depends, Query, Path, UploadFile, File, Form
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -17,13 +17,17 @@ router = APIRouter()
 
 @router.post("/", response_model=CursoResponse, status_code=201)
 async def create_curso_route(
-    curso: CursoCreate,
+    nome: str = Form(...),
+    descricao: Optional[str] = Form(None),
+    capa: UploadFile = File(description="Capa do curso"),
     db: Session = Depends(get_db)
 ):
     """
     Cria um novo curso.
     """
-    return await create_curso(db=db, curso=curso)
+
+    curso = CursoCreate(nome=nome, descricao=descricao)
+    return await create_curso(db=db, curso=curso, capa=capa)
 
 @router.get("/{curso_id}", response_model=CursoResponse)
 async def read_curso(
@@ -48,14 +52,18 @@ async def read_cursos(
 
 @router.patch("/{curso_id}", response_model=CursoResponse)
 async def update_curso_route(
-    curso_data: CursoUpdate,
+    nome: Optional[str] = Form(None),
+    descricao: Optional[str] = Form(None),
+    capa: Optional[UploadFile]|str = File(None, description="Capa do curso"),
     curso_id: int = Path(..., title="ID do curso", ge=1),
     db: Session = Depends(get_db)
 ):
     """
     Atualiza um curso existente.
     """
-    return await update_curso(db=db, curso_id=curso_id, curso_data=curso_data)
+
+    curso_data = CursoUpdate(nome=nome, descricao=descricao)
+    return await update_curso(db=db, curso_id=curso_id, curso_data=curso_data, capa=capa)
 
 @router.delete("/{curso_id}", response_model=Dict[str, bool])
 async def delete_curso_route(

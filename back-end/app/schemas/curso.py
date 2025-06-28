@@ -24,6 +24,9 @@ class ModuloSimple(BaseModel):
 
 class CursoResponse(CursoBase):
     id: int
+    capa: str
+    capa_mime: str
+
     modulos: List[ModuloSimple] = []
     
     model_config = {
